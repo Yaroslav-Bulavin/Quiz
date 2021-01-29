@@ -8,90 +8,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const next = document.getElementById("next");
     const send = document.getElementById("send");
 
-    const questions = [
-        {
-            question: "Какого цвета бургер?",
-            answers: [
-                {
-                    title: 'Стандарт',
-                    url: './image/burger.png'
-                },
-                {
-                    title: 'Черный',
-                    url: './image/burgerBlack.png'
-                }
-            ],
-            type: 'radio'
-        },
-        {
-            question: "Из какого мяса котлета?",
-            answers: [
-                {
-                    title: 'Курица',
-                    url: './image/chickenMeat.png'
-                },
-                {
-                    title: 'Говядина',
-                    url: './image/beefMeat.png'
-                },
-                {
-                    title: 'Свинина',
-                    url: './image/porkMeat.png'
-                }
-            ],
-            type: 'radio'
-        },
-        {
-            question: "Дополнительные ингредиенты?",
-            answers: [
-                {
-                    title: 'Помидор',
-                    url: './image/tomato.png'
-                },
-                {
-                    title: 'Огурец',
-                    url: './image/cucumber.png'
-                },
-                {
-                    title: 'Салат',
-                    url: './image/salad.png'
-                },
-                {
-                    title: 'Лук',
-                    url: './image/onion.png'
-                }
-            ],
-            type: 'checkbox'
-        },
-        {
-            question: "Добавить соус?",
-            answers: [
-                {
-                    title: 'Чесночный',
-                    url: './image/sauce1.png'
-                },
-                {
-                    title: 'Томатный',
-                    url: './image/sauce2.png'
-                },
-                {
-                    title: 'Горчичный',
-                    url: './image/sauce3.png'
-                }
-            ],
-            type: 'radio'
-        }
-    ];
+    const firebaseConfig = {
+        apiKey: "AIzaSyBh9UpEX15wiPY-E1vfhtJVn_-uekQiwPg",
+        authDomain: "quiz-85310.firebaseapp.com",
+        databaseURL: "https://quiz-85310-default-rtdb.firebaseio.com",
+        projectId: "quiz-85310",
+        storageBucket: "quiz-85310.appspot.com",
+        messagingSenderId: "283308193397",
+        appId: "1:283308193397:web:320ff0c084fb071188aa3c",
+        measurementId: "G-WELX9Q9DLL"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    const getData = () => {
+        formAnswers.textContent = "LOADING...";
+        prev.classList.add("d-none");
+        next.classList.add("d-none");
+        setTimeout(() => {
+            firebase.database().ref().child('questions').once('value')
+                .then(snap => playTest(snap.val()));
+        }, 1000);
+    };
 
     btnOpenModal.addEventListener("click", () => {
         modal.classList.add("d-block");
-        playTest();
+        getData();
 
     });
     closeModal.addEventListener("click", () => {
         modal.classList.remove("d-block");
     });
-    const playTest = () => {
+    const playTest = (questions) => {
         let numberQuestion = 0;
         const finalAnswers = [];
         const renderAnswers = (index) => {
@@ -181,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
             checkAnswer();
             numberQuestion++;
             renderQuestions(numberQuestion);
-            console.log(finalAnswers)
+            firebase.database().ref().child('contacts').push(finalAnswers);
         }
     }
 });
